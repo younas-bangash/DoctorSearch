@@ -7,6 +7,7 @@
 3. UI unit test demonstration using Espresso
 4. Gradle scripts for running sonarqube static code analysis, code coverage, etc.
 5. Use AndroidX for Android Support Libraries
+6. Use of The Navigation component library
 
 The whole application is built based on the MVVM architectural pattern.
 
@@ -63,3 +64,8 @@ Open terminal and type the following command
 The coverage report will be generated on the following path.
 
 ``` app/build/reports ```
+
+# Improvements 
+1. Code Coverage need to increase
+2. UI testing has to be written
+3. Pagination can be improved by using Paging library
