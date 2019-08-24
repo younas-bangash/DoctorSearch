@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/frameContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.DoctorListFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/doctorListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_toolbar"
+            android:visibility="@{viewModel.serviceError.getValue() == null ? View.VISIBLE : View.GONE}" />
+
+        <include
+            android:id="@+id/item_data_loading"
+            layout="@layout/item_data_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.serviceResponse.getValue() ? View.GONE : View.VISIBLE}" />
+
+        <include
+            android:id="@+id/layout_toolbar"
+            layout="@layout/layout_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.vivy.docsearch.viewmodel.DoctorListViewModel" />
+    </data>
+</layout>
