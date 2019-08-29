@@ -35,7 +35,8 @@ public class TokenAuthenticator implements Authenticator {
         if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
             String newAccessToken;
             setAuthRequestUrl();
-            Call<OauthTokenResponse> tokenRefreshCall = servicesHolder.getApiService().refreshToken("androidChallenge@vivy.com", "88888888");
+            Call<OauthTokenResponse> tokenRefreshCall = servicesHolder.getApiService().refreshToken(
+                    ApiConstants.AUTH_URL + "oauth/token?grant_type=password", "androidChallenge@vivy.com", "88888888");
             retrofit2.Response<OauthTokenResponse> oauthTokenResponse = tokenRefreshCall.execute();
             if (oauthTokenResponse != null && oauthTokenResponse.isSuccessful()) {
                 newAccessToken = oauthTokenResponse.body().getAccessToken();
@@ -51,11 +52,11 @@ public class TokenAuthenticator implements Authenticator {
     }
 
     private void setAuthRequestUrl() {
-        servicesHolder.getRequestInterceptor().setInterceptor(ApiConstants.AUTH_URL);
+//        servicesHolder.getRequestInterceptor().setInterceptor(ApiConstants.AUTH_URL);
     }
 
     private void setServicesBaseUrl() {
-        servicesHolder.getRequestInterceptor().setInterceptor(ApiConstants.SERVICES_BASE_URL);
+//        servicesHolder.getRequestInterceptor().setInterceptor(ApiConstants.SERVICES_BASE_URL);
     }
 
     private int responseCount(Response response) {

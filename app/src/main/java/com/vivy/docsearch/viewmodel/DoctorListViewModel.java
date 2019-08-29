@@ -12,6 +12,7 @@ import com.vivy.docsearch.repository.DoctorListRepository;
 import com.vivy.docsearch.ui.DoctorListAdapter;
 import com.vivy.docsearch.util.PaginationScrollListener;
 import com.vivy.docsearch.util.RxSearch;
+import com.vivy.docsearch.util.ServicesHolder;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -34,9 +35,9 @@ public class DoctorListViewModel extends ViewModel implements ResponseListener<D
     private Disposable searchViewDisposable;
 
     @Inject
-    public DoctorListViewModel(DoctorListRepository repository) {
+    public DoctorListViewModel(DoctorListRepository repository, ServicesHolder servicesHolder) {
         this.repository = repository;
-        doctorListAdapter = new DoctorListAdapter(new ArrayList<>());
+        doctorListAdapter = new DoctorListAdapter(new ArrayList<>(), servicesHolder);
     }
 
     public DoctorListAdapter getDoctorListAdapter() {

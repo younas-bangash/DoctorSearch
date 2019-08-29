@@ -2,6 +2,7 @@ package com.vivy.docsearch.repository;
 
 import androidx.annotation.NonNull;
 
+import com.vivy.docsearch.api.ApiConstants;
 import com.vivy.docsearch.api.ApiService;
 import com.vivy.docsearch.api.ServiceRequest;
 import com.vivy.docsearch.api.response.DoctorSearchResponse;
@@ -28,7 +29,7 @@ public class DoctorListRepository {
             @NonNull
             @Override
             protected Call<DoctorSearchResponse> createCall() {
-                return apiService.searchDoctor(lastKey, name, lat, lng);
+                return apiService.searchDoctor(ApiConstants.SERVICES_BASE_URL + "api/users/me/doctors", lastKey, name, lat, lng);
             }
         };
     }

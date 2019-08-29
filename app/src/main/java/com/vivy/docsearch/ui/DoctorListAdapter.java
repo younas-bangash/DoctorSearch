@@ -1,17 +1,28 @@
 package com.vivy.docsearch.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.vivy.docsearch.api.ApiConstants;
+import com.vivy.docsearch.api.ServiceRequest;
+import com.vivy.docsearch.api.response.ErrorResponse;
+import com.vivy.docsearch.api.response.ResponseListener;
 import com.vivy.docsearch.databinding.DoctorListItemBinding;
 import com.vivy.docsearch.databinding.ItemDataLoadingBinding;
 import com.vivy.docsearch.model.Doctor;
+import com.vivy.docsearch.util.ServicesHolder;
 
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 /**
  * List adapter for doctor
@@ -21,9 +32,11 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
     private static final int TYPE_ITEM = 1;
     private List<Doctor> doctorList;
     private boolean isLoadingAdded = false;
+    private ServicesHolder servicesHolder;
 
-    public DoctorListAdapter(List<Doctor> doctorList) {
+    public DoctorListAdapter(List<Doctor> doctorList, ServicesHolder servicesHolder) {
         this.doctorList = doctorList;
+        this.servicesHolder = servicesHolder;
     }
 
     @Override
@@ -55,8 +68,41 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DoctorItemViewHolder) {
-            ((DoctorItemViewHolder) holder).bindView(doctorList.get(position));
+            DoctorItemViewHolder doctorItemViewHolder = ((DoctorItemViewHolder) holder);
+            Doctor doctor = doctorList.get(position);
+            if(!doctorItemViewHolder.isImageLoaded){
+                getDoctorPicture(doctor, doctorItemViewHolder);
+            }
+            doctorItemViewHolder.bindView(doctor);
         }
+    }
+
+    public void getDoctorPicture(Doctor doctor, DoctorItemViewHolder itemViewHolder) {
+
+        new ServiceRequest<ResponseBody>(new ResponseListener<ResponseBody>() {
+            @Override
+            public void onSuccess(ResponseBody responseBody) {
+                if (null != responseBody && null != responseBody.byteStream()) {
+                    itemViewHolder.isImageLoaded = true;
+                    Bitmap bmp = BitmapFactory.decodeStream(responseBody.byteStream());
+                    itemViewHolder.imageView.setBackgroundResource(0);
+                    itemViewHolder.imageView.setImageBitmap(bmp);
+                }
+
+            }
+
+            @Override
+            public void onFailure(ErrorResponse errorResponse) {
+                itemViewHolder.isImageLoaded = false;
+            }
+        }) {
+            @NonNull
+            @Override
+            protected Call<ResponseBody> createCall() {
+                return servicesHolder.getApiService().getDoctorPicture(ApiConstants.SERVICES_BASE_URL + "api/doctors/"
+                        + doctor.getId() + "/keys/profilepictures", doctor.getName());
+            }
+        };
     }
 
     public class DataLoadingItemViewHolder extends RecyclerView.ViewHolder {
@@ -67,9 +113,11 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
 
     public class DoctorItemViewHolder extends RecyclerView.ViewHolder {
         private DoctorListItemBinding binding;
-
+        public ImageView imageView;
+        public boolean isImageLoaded;
         public DoctorItemViewHolder(DoctorListItemBinding binding) {
             super(binding.getRoot());
+            this.imageView = binding.placeImage;
             this.binding = binding;
         }
 
