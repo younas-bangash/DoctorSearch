@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import com.vivy.docsearch.api.response.ErrorResponse;
 import com.vivy.docsearch.repository.DoctorListRepository;
 import com.vivy.docsearch.util.PaginationScrollListener;
+import com.vivy.docsearch.util.ServicesHolder;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -15,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -22,6 +25,8 @@ import io.reactivex.disposables.Disposable;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DoctorListViewModelTest {
+    @Inject
+    private ServicesHolder servicesHolder;
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
     @Mock
@@ -34,7 +39,7 @@ public class DoctorListViewModelTest {
 
     @Before
     public void setUp(){
-        doctorListViewModel = new DoctorListViewModel(repository);
+        doctorListViewModel = new DoctorListViewModel(repository, servicesHolder);
     }
 
     @After
@@ -73,10 +78,5 @@ public class DoctorListViewModelTest {
         doctorListViewModel.setPaginationScrollListener(paginationScrollListener);
 
         Assert.assertNotNull(doctorListViewModel.getPaginationScrollListener());
-    }
-
-    @Test
-    public void initSearchViewWithDebounce(){
-
     }
 }

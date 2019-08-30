@@ -18,41 +18,21 @@ import okhttp3.Response;
  */
 @Singleton
 public class RequestInterceptor implements Interceptor {
-    private String host;
-    private String scheme;
 
     @Inject
     public RequestInterceptor() {
         // Intentionally blank
     }
 
-    public void setInterceptor(String url) {
-        HttpUrl httpUrl = HttpUrl.parse(url);
-        scheme = httpUrl.scheme();
-        host = httpUrl.host();
-    }
-
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
-        Request original = chain.request();
-        if (scheme != null && host != null) {
-            HttpUrl newUrl = original.url().newBuilder()
-                    .scheme(scheme)
-                    .host(host)
-                    .build();
-            original = original.newBuilder()
-                    .url(newUrl)
-                    .addHeader("Accept", "application/json")
-                    .build();
-        }
-        return chain.proceed(original);
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getScheme() {
-        return scheme;
+        Request originalRequest = chain.request();
+        HttpUrl originalHttpUrl = originalRequest.url();
+        HttpUrl url = originalHttpUrl.newBuilder().build();
+        Request request = originalRequest.newBuilder()
+                .url(url)
+                .addHeader("Accept", "application/json")
+                .build();
+        return chain.proceed(request);
     }
 }

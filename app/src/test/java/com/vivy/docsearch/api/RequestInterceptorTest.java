@@ -3,7 +3,6 @@ package com.vivy.docsearch.api;
 import junit.framework.TestCase;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,17 +43,7 @@ public class RequestInterceptorTest {
     }
 
     @Test
-    public void interceptorSetter() {
-        requestInterceptor.setInterceptor(ApiConstants.AUTH_URL);
-
-        Assert.assertEquals("https", requestInterceptor.getScheme());
-
-        Assert.assertEquals("auth.staging.vivy.com", requestInterceptor.getHost());
-    }
-
-    @Test
     public void intercept() throws IOException {
-        requestInterceptor.setInterceptor(ApiConstants.AUTH_URL);
         final Request request = new Request.Builder()
                 .url(ApiConstants.AUTH_URL)
                 .build();

@@ -50,10 +50,8 @@ public class TokenAuthenticatorTest {
     public void setUp() {
         requestInterceptor = new RequestInterceptor();
         oauthTokenResponse = new OauthTokenResponse();
-        requestInterceptor.setInterceptor(ApiConstants.AUTH_URL);
         servicesHolder = new ServicesHolder();
         servicesHolder.setApiService(apiService);
-        servicesHolder.setRequestInterceptor(requestInterceptor);
         tokenAuthenticator = new TokenAuthenticator(servicesHolder);
         responseBody = ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "ABC");
         oauthTokenResponseResponse = retrofit2.Response.success(oauthTokenResponse,
@@ -72,7 +70,7 @@ public class TokenAuthenticatorTest {
     @Test
     public void authenticate() throws IOException {
 
-        Mockito.when(servicesHolder.getApiService().refreshToken(any(), any())).thenReturn(oauthTokenResponseCall);
+        Mockito.when(servicesHolder.getApiService().refreshToken(any(), any(), any())).thenReturn(oauthTokenResponseCall);
 
         Request newRequest = tokenAuthenticator.authenticate(null, getResponse(responseBody,
                 HttpURLConnection.HTTP_UNAUTHORIZED));

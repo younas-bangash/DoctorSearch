@@ -49,6 +49,11 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
         return doctorList.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,31 +74,34 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DoctorItemViewHolder) {
             DoctorItemViewHolder doctorItemViewHolder = ((DoctorItemViewHolder) holder);
+            doctorItemViewHolder.imageView.setTag(position);
             Doctor doctor = doctorList.get(position);
-            if(!doctorItemViewHolder.isImageLoaded){
-                getDoctorPicture(doctor, doctorItemViewHolder);
+            if(!doctor.isImageLoaded()){
+                getDoctorPicture(doctor, doctorItemViewHolder, position);
             }
             doctorItemViewHolder.bindView(doctor);
         }
     }
 
-    public void getDoctorPicture(Doctor doctor, DoctorItemViewHolder itemViewHolder) {
+    public void getDoctorPicture(Doctor doctor, DoctorItemViewHolder itemViewHolder, int pos) {
 
         new ServiceRequest<ResponseBody>(new ResponseListener<ResponseBody>() {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 if (null != responseBody && null != responseBody.byteStream()) {
-                    itemViewHolder.isImageLoaded = true;
+                    doctor.setImageLoaded(true);
                     Bitmap bmp = BitmapFactory.decodeStream(responseBody.byteStream());
-                    itemViewHolder.imageView.setBackgroundResource(0);
-                    itemViewHolder.imageView.setImageBitmap(bmp);
+                    int imageViewTag = (int) itemViewHolder.imageView.getTag();
+                    if(pos == imageViewTag){
+                        itemViewHolder.imageView.setBackgroundResource(0);
+                        itemViewHolder.imageView.setImageBitmap(bmp);
+                    }
                 }
-
             }
 
             @Override
             public void onFailure(ErrorResponse errorResponse) {
-                itemViewHolder.isImageLoaded = false;
+                doctor.setImageLoaded(false);
             }
         }) {
             @NonNull
@@ -114,7 +122,6 @@ public class DoctorListAdapter extends RecyclerView.Adapter {
     public class DoctorItemViewHolder extends RecyclerView.ViewHolder {
         private DoctorListItemBinding binding;
         public ImageView imageView;
-        public boolean isImageLoaded;
         public DoctorItemViewHolder(DoctorListItemBinding binding) {
             super(binding.getRoot());
             this.imageView = binding.placeImage;

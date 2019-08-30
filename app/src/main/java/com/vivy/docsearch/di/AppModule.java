@@ -26,13 +26,12 @@ public class AppModule {
     @Provides
     @Singleton
     OkHttpClient provideOkHttpClient(RequestInterceptor interceptor, ServicesHolder servicesHolder) {
-        servicesHolder.setRequestInterceptor(interceptor);
         TokenAuthenticator authenticator = new TokenAuthenticator(servicesHolder);
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         okHttpClient.connectTimeout(ApiConstants.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
         okHttpClient.readTimeout(ApiConstants.READ_TIMEOUT, TimeUnit.MILLISECONDS);
         okHttpClient.writeTimeout(ApiConstants.WRITE_TIMEOUT, TimeUnit.MILLISECONDS);
-        okHttpClient.addInterceptor(servicesHolder.getRequestInterceptor());
+        okHttpClient.addInterceptor(interceptor);
         okHttpClient.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         okHttpClient.authenticator(authenticator);
         return okHttpClient.build();

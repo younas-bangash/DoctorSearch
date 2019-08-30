@@ -1,7 +1,6 @@
 package com.vivy.docsearch.util;
 
 import com.vivy.docsearch.api.ApiService;
-import com.vivy.docsearch.api.RequestInterceptor;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -35,12 +34,5 @@ public class ServicesHolderTest {
         servicesHolder.setApiService(apiService);
 
         Assert.assertNotNull(servicesHolder.getApiService());
-    }
-
-    @Test
-    public void getterSetterRequestInterceptor() {
-        servicesHolder.setRequestInterceptor(new RequestInterceptor());
-
-        Assert.assertNotNull(servicesHolder.getRequestInterceptor());
     }
 }

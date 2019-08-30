@@ -3,7 +3,8 @@ package com.vivy.docsearch.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Doctor Data Model
+/**
+ * Doctor Data Model
  */
 public class Doctor {
     private String address;
@@ -23,6 +24,7 @@ public class Doctor {
     private List<Integer> specialityIds = null;
     private String website;
     private Translation translation;
+    private transient boolean imageLoaded;
 
     public String getAddress() {
         return address;
@@ -158,5 +160,13 @@ public class Doctor {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public boolean isImageLoaded() {
+        return imageLoaded;
+    }
+
+    public void setImageLoaded(boolean imageLoaded) {
+        this.imageLoaded = imageLoaded;
     }
 }
